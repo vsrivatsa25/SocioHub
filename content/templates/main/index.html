@@ -1,0 +1,671 @@
+{% load static %}
+{% load bootstrap4 %}
+<!DOCTYPE html>
+<html  >
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="{% static 'images/sociohublogo.png' %}" type="image/x-icon">
+  <meta name="description" content="">
+  
+  <title>SocioHub</title>
+  <link rel="stylesheet" href="{% static 'web/assets/mobirise-icons/mobirise-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-grid.min.css' %}">
+  <link rel="stylesheet" href="{% static 'socicon/css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'tether/tether.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dropdown/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'theme/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-reboot.min.css' %}">
+  <link rel="preload" as="style" href="{% static 'mobirise/css/mbr-additional.css' %}">
+    <link rel="stylesheet" href="{% static 'mobirise/css/mbr-additional.css' %}" type="text/css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="{% static 'feed.css' %}" />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <link rel="stylesheet" href="{% static 'theme/css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+    <script src="{% static 'comment.js' %}"></script>
+    <script src="{% static 'like.js' %}"></script>
+  
+  
+</head>
+<body class="container-fluid-lg">
+{% if request.user.is_authenticated %}
+  <nav class="navigation" style="display:flex;">
+      <div class="navigation__column">
+        <a href="">
+          <!-- Master branch comment -->
+          <img src="{% static 'images/sociohublogo.png' %}" />
+        </a>
+      </div>
+      <div class="navigation__column">
+        <i class="fa fa-search"></i>
+          <form action="{% url 'search' %}" method="get">
+        <input name="search" type="text" placeholder="Search" />
+
+          </form>
+      </div>
+      <div class="navigation__column">
+        <ul class="navigations__links" style="margin-bottom:auto;">
+
+            <li class="navigation__list-item">
+            <a href="{% url 'friends' %}" class="navigation__link">
+              <i class="fa fa-users fa-lg" aria-hidden="true"></i>
+            </a>
+          </li>
+
+          <li class="navigation__list-item">
+            <a href="{% url 'newpost' %}" class="navigation__link">
+              <i class="fa fa-plus-square-o fa-lg" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="navigation__list-item">
+            <a href="{% url 'liked' %}" class="navigation__link">
+              <i class="fa fa-heart-o fa-lg"></i>
+            </a>
+          </li>
+            <li class="navigation__list-item">
+            <a href="{% url 'interests' %}" class="navigation__link">
+              <i class="fa fa-list fa-lg"></i>
+            </a>
+          </li>
+          <li class="navigation__list-item">
+            <a href="{% url 'accounts:change_profile' %}" class="navigation__link">
+              <i class="fa fa-user-o fa-lg"></i>
+            </a>
+          </li>
+            <li class="navigation__list-item">
+            <a href="{% url 'accounts:change_password' %}" class="navigation__link">
+              <i class="fa fa-lock fa-lg"></i>
+            </a>
+          </li>
+          <li class="navigation__list-item">
+            <a href="{% url 'profilepic' %}" class="navigation__link">
+                {% for pic in context.profilepics %}
+                {% if pic.user_id == request.user.id %}
+              <img
+                src="{{pic.img.url}}"
+                style="float: right; width: 2.5rem;height: 2.5rem; border-radius: 50%"
+              />
+                {% endif %}
+                {% endfor %}
+            </a>
+          </li>
+            <li class="navigation__list-item">
+            <a href="{% url 'accounts:log_out' %}" class="navigation__link">
+              Sign Out
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+{% bootstrap_messages %}
+    <div style="display: flex">
+
+
+
+      <div id="feed" style="display: flex; width: 17%; margin-left: 3%">
+          <div class="photo">
+          <h3 class="photo__header">Suggested Connections:</h3>
+              {% for rec in context.recommendedusers %}
+
+          <div style="display: flex">
+              {% for pic in context.profilepics %}
+              {% if pic.user_id == rec.id %}
+            <img
+              src="{{pic.img.url}}"
+              style="padding: 10px; width: 35%; border-radius: 50%"
+              class="photo__avatar"
+            />
+              {% endif %}
+              {% endfor %}
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 0 0 0 10px; width: 23%"
+                >{{rec.username}}<a href="/follow/<userid?userid={{rec.id}}"><i class="fa fa-user-plus fa-2x"></i></a
+              ></span>
+            </div>
+
+          </div>
+              {% endfor %}
+
+
+        </div>
+      </div>
+      <main id="feed" style="display: flex; padding: 0 0 0 10%">
+          <H4>Welcome, {{request.user.first_name}} {{request.user.last_name}}</H4>
+          {% for post in context.posts %}
+        <div class="photo" style="margin:0 0 1rem 0;">
+        <div class="photo__header">
+            {% for dp in context.profilepics %}
+            {% if dp.user_id == post.user_id %}
+          <img src="{{dp.img.url}}" class="photo__avatar" style="height:4rem;width:4rem;">
+            {% endif %}
+            {% endfor %}
+          <div class="photo__user-info">
+              {% for user in context.users %}
+              {% if user.id == post.user_id %}
+            <span class="photo__author">{{user.username}}</span>
+            <span class="photo__location">{{post.location}}</span>
+              {% endif %}
+              {% endfor %}
+          </div>
+        </div>
+        <img src="{{post.img.url}}" />
+
+        <div class="photo__info">
+                  <caption>{{post.text}}</caption>
+          <br><br>
+          <div class="photo__actions">
+
+<form name="form1" method="post" style="display:inline;">
+                        <span class="photo__action" id="l1">
+
+                  {% csrf_token %}
+                  <input hidden name="post" id="id_post" value="{{post.id}}">
+                            <button class="fa fa-thumbs-up fa-lg" style="background-color:white;border:none;display:inline-flex;" type="submit" ></button>
+
+                        </span>
+    </form>
+            <span class="photo__action">
+              <i class="fa fa-comment-o fa-lg"></i>
+            </span>
+          </div>
+
+          <ul class="photo__comments" id="coms1">
+              {% for comment in context.comments %}
+              {% if comment.post_id == post.id %}
+            <li class="photo__comment">
+                {% for commentor in context.users %}
+                {% if commentor.id == comment.user_id %}
+              <span class="photo__comment-author">{{commentor.username}}</span> {{comment.text}}
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </li>
+          </ul>
+
+          <span class="photo__time-ago">{{post.time}}</span>
+
+          <div class="photo__add-comment-container">
+              <form name="form2" method="post" style="display:inline;">
+                {% csrf_token %}
+              <input  hidden name="post" id="id_post" value="{{post.id}}">
+            <textarea  id="id_text" style="display:inline;" name="text" placeholder="Add a comment..."></textarea>
+            <button class="fa fa-plus" type="submit" style="border:none;background-color:white;display:inline;"></button>
+                  </form>
+          </div>
+
+        </div>
+      </div>
+          {% endfor %}
+      </main>
+      <div id="feed" style="display: flex; width: 17%; margin-left: 3%">
+        <div class="photo">
+          <h3 class="photo__header">Topics you might like:</h3>
+          <div style="display: flex; margin-left: 4%">
+            <i class="fa fa-bitcoin fa-2x"></i>
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 4px 0 10px 10px; width: 23%"
+                >Forex</span
+              >
+            </div>
+          </div>
+          <div style="display: flex; margin-left: 4%">
+            <i class="fa fa-camera fa-2x"></i>
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 4px 0 10px 10px; width: 23%"
+                >Photography</span
+              >
+            </div>
+          </div>
+          <div style="display: flex; margin-left: 4%">
+            <i class="fa fa-twitter fa-2x"></i>
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 4px 0 10px 10px; width: 23%"
+                >Twitter</span
+              >
+            </div>
+          </div>
+          <div style="display: flex; margin-left: 4%">
+            <i class="fa fa-heartbeat fa-2x"></i>
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 4px 0 10px 10px; width: 23%"
+                >Health</span
+              >
+            </div>
+          </div>
+          <div style="display: flex; margin-left: 4%">
+            <i class="fa fa-gamepad fa-2x"></i>
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 4px 0 10px 10px; width: 23%"
+                >Gaming</span
+              >
+            </div>
+          </div>
+          <div style="display: flex; margin-left: 4%">
+            <i class="fa fa-shopping-bag fa-2x"></i>
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 4px 0 10px 10px; width: 23%"
+                >Shopping</span
+              >
+            </div>
+          </div>
+          <div style="display: flex; margin-left: 4%">
+            <i class="fa fa-suitcase fa-2x"></i>
+            <div class="photo__user-info">
+              <span
+                class="photo__author"
+                style="padding: 4px 0 10px 10px; width: 23%"
+                >Travel</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="cid-qTkAaeaxX5 mbr-reveal" id="footer1-2">
+      <div class="container">
+        <div class="media-container-row content text-white">
+          <div class="col-12 col-md-3">
+            <div class="media-wrap">
+              <a href="">
+                <img
+                  src="{% static 'images/sociohublogo.png' %}"
+                  style="height: 3.8rem"
+                  alt="Logo"
+                />
+              </a>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 mbr-fonts-style display-7">
+            <h5 class="pb-3">Address</h5>
+            <p class="mbr-text">
+              VIT University, Vellore<br />Tamil Nadu&nbsp;<br />India
+            </p>
+          </div>
+          <div class="col-12 col-md-3 mbr-fonts-style display-7">
+            <h5 class="pb-3">Contacts</h5>
+            <p class="mbr-text">
+              Email: vrishabv.srivatsa2018@vitstudent.ac.in
+              <br />ritik.khatri2018@vitstudent.ac.in
+              <br />pranav.khurana2018@vitstudent.ac.in
+            </p>
+          </div>
+          <div class="col-12 col-md-3 mbr-fonts-style display-7">
+            <h5 class="pb-3">Started</h5>
+            <p class="mbr-text">August, 2020</p>
+          </div>
+        </div>
+        <div class="footer-lower">
+          <div class="media-container-row">
+            <div class="col-sm-12">
+              <hr />
+            </div>
+          </div>
+          <div class="media-container-row mbr-white">
+            <div class="col-sm-6 copyright">
+              <p class="mbr-text mbr-fonts-style display-7">
+                © Copyright 2020 Vrishab V Srivatsa- All Rights Reserved
+              </p>
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% else %}
+
+<section class="menu cid-qTkzRZLJNu" once="menu" id="menu1-0">
+    <nav class="navbar navbar-expand beta-menu navbar-dropdown align-items-center navbar-fixed-top navbar-toggleable-sm">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+        <div class="menu-logo">
+            <div class="navbar-brand">
+                <span class="navbar-logo">
+                    <a href="{% url 'index' %}">
+                         <img src="{% static 'images/sociohublogo.png' %}" alt="Logo" style="height: 3.8rem;">
+                    </a>
+                </span>
+
+            </div>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true"><li class="nav-item">
+                    <a class="nav-link link text-white display-5" href="#header2-1">
+                        <span class="mbri-home mbr-iconfont mbr-iconfont-btn"></span>
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link text-white display-5" href="#team1-8">
+                        <span class="mbri-search mbr-iconfont mbr-iconfont-btn"></span>
+                        About Us
+                    </a>
+                </li></ul>
+            <div class="navbar-buttons mbr-section-btn">
+                <a class="btn btn-sm btn-white-outline display-7" href="{% url 'accounts:sign_up' %}">
+                    <span class="mbri-touch mbr-iconfont mbr-iconfont-btn"></span>
+                    <font face="MobiriseIcons"><span style="font-size: 25.6px;">Sign Up!</span></font>
+                </a></div>
+        </div>
+    </nav>
+</section>
+
+
+
+<section class="cid-qTkA127IK8 mbr-fullscreen mbr-parallax-background" id="header2-1">
+
+    <div class="container align-center">
+        <div class="row justify-content-md-center">
+            <div class="mbr-white col-md-10">
+                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">
+                    SOCIOHUB</h1>
+                
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                    Connecting you to those who matter to you<br><br></p>
+                <div class="mbr-section-btn"><a class="btn btn-md btn-secondary display-4" href="{% url 'accounts:sign_up' %}">TODAY'S POSTS</a>
+                    <a class="btn btn-md btn-white display-4" href="{% url 'accounts:log_in' %}">LOG IN</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="mbr-arrow hidden-sm-down" aria-hidden="true">
+        <a href="#next">
+            <i class="mbri-down mbr-iconfont"></i>
+        </a>
+    </div>
+</section>
+
+<section class="counters1 counters cid-s6w8mY4M2i" id="counters1-4">
+
+    
+
+    
+
+    <div class="container">
+        <h2 class="mbr-section-title pb-3 align-center mbr-fonts-style display-2">
+            Our Numbers</h2>
+        <h3 class="mbr-section-subtitle mbr-fonts-style display-5">
+            The numbers from our Database
+        </h3>
+
+        <div class="container pt-4 mt-2">
+            <div class="media-container-row">
+                <div class="card p-3 align-center col-12 col-md-6 col-lg-4">
+                    <div class="panel-item p-3">
+                        <div class="card-img pb-3">
+                            <span class="mbr-iconfont mbri-share"></span>
+                        </div>
+
+                        <div class="card-text">
+                            <h3 class="count pt-3 pb-3 mbr-fonts-style display-2">
+                                {{context.post_count}}
+                            </h3>
+                            <h4 class="mbr-content-title mbr-bold mbr-fonts-style display-7">
+                                Total Posts</h4>
+                            <p class="mbr-content-text mbr-fonts-style display-7">We want our users to have the freedom to share everything they feel like. SocioHub is by great thinkers, for great thinkers and to create great thinkers!</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card p-3 align-center col-12 col-md-6 col-lg-4">
+                    <div class="panel-item p-3">
+                        <div class="card-img pb-3">
+                            <span class="mbr-iconfont mbri-user"></span>
+                        </div>
+                        <div class="card-text">
+                            <h3 class="count pt-3 pb-3 mbr-fonts-style display-2">
+                                {{context.user_count}}
+                            </h3>
+                            <h4 class="mbr-content-title mbr-bold mbr-fonts-style display-7">
+                                Our Users
+                            </h4>
+                            <p class="mbr-content-text mbr-fonts-style display-7">
+                                    Our users come from all walks of life and are the greatest asset to SocioHub</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-3 align-center col-12 col-md-6 col-lg-4">
+                    <div class="panel-item p-3">
+                        <div class="card-img pb-3">
+                            <span class="mbr-iconfont mbri-users"></span>
+                        </div>
+                        <div class="card-text">
+                            <h3 class="count pt-3 pb-3 mbr-fonts-style display-2">
+                                {{context.connections}}
+                            </h3>
+                            <h4 class="mbr-content-title mbr-bold mbr-fonts-style display-7">Connections</h4>
+                            <p class="mbr-content-text mbr-fonts-style display-7">The main objective of SocioHub is to connect people and make sure every voice is valued, and in the right direction.</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                
+            </div>
+        </div>
+   </div>
+</section>
+
+<section class="team1 cid-s6wahmalfp" id="team1-8">
+    
+    
+    
+    <div class="container align-center">
+        <h2 class="pb-3 mbr-fonts-style mbr-section-title display-2" >MEET THE TEAM
+        </h2>
+        <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-5" style="display:inline; ">
+        18BCI0074
+        </h3>
+        <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-5" style="display:inline; padding-left:15%">
+        18BCE2513
+        </h3>
+        <h3 class="pb-5 mbr-section-subtitle mbr-fonts-style mbr-light display-5" style="display:inline; padding-left:15%">
+        18BCE0813
+        </h3>
+        <div class="row media-row">
+            
+        <div class="team-item col-lg-3 col-md-6">
+                <div class="item-image">
+                    <img src="{% static 'images/face1.jpg' %}" alt="" title="">
+                </div>
+                <div class="item-caption py-3">
+                    <div class="item-name px-2">
+                        <p class="mbr-fonts-style display-5">
+                           Vrishab Srivatsa</p>
+                    </div>
+                    <div class="item-role px-2">
+                        <p>Backend Developer</p>
+                    </div>
+                    <div class="item-social pt-2">
+                        <a href="https://twitter.com/vsrivatsa25" target="_blank">
+                            <span class="p-1 socicon-twitter socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-facebook socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-googleplus socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-linkedin socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            
+                        </a>
+                        <a href="" target="_blank">
+                            
+                        </a>
+                    </div>
+                </div>
+            </div><div class="team-item col-lg-3 col-md-6">
+                <div class="item-image">
+                    <img src="{% static 'images/face2.jpg' %}" alt="" title="">
+                </div>
+                <div class="item-caption py-3">
+                    <div class="item-name px-2">
+                        <p class="mbr-fonts-style display-5">
+                           Pranav Khurana</p>
+                    </div>
+                    <div class="item-role px-2">
+                        <p>Research</p>
+                    </div>
+                    <div class="item-social pt-2">
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-twitter socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-facebook socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-googleplus socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-linkedin socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            
+                        </a>
+                        <a href="" target="_blank">
+                            
+                        </a>
+                    </div>
+                </div>
+            </div><div class="team-item col-lg-3 col-md-6">
+                <div class="item-image">
+                    <img src="{% static 'images/face3.jpg' %}" alt="" title="">
+                </div>
+                <div class="item-caption py-3">
+                    <div class="item-name px-2">
+                        <p class="mbr-fonts-style display-5">
+                           Ritik Khatri</p>
+                    </div>
+                    <div class="item-role px-2">
+                        <p>Frontend Developer</p>
+                    </div>
+                    <div class="item-social pt-2">
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-twitter socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-facebook socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-googleplus socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            <span class="p-1 socicon-linkedin socicon mbr-iconfont mbr-iconfont-social"></span>
+                        </a>
+                        <a href="" target="_blank">
+                            
+                        </a>
+                        <a href="" target="_blank">
+                            
+                        </a>
+                    </div>
+                </div>
+            </div></div>    
+    </div>
+</section>
+
+<section class="cid-qTkAaeaxX5 mbr-reveal" id="footer1-2">
+
+    
+
+    
+
+    <div class="container">
+        <div class="media-container-row content text-white">
+            <div class="col-12 col-md-3">
+                <div class="media-wrap">
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'images/sociohublogo.png' %}" style="height:3.8rem;" alt="Logo">
+                    </a>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 mbr-fonts-style display-7">
+                <h5 class="pb-3">
+                    Address
+                </h5>
+                <p class="mbr-text">VIT University, Vellore<br>Tamil Nadu&nbsp;<br>India</p>
+            </div>
+            <div class="col-12 col-md-3 mbr-fonts-style display-7">
+                <h5 class="pb-3">
+                    Contacts
+                </h5>
+                <p class="mbr-text">
+                    Email: vrishabv.srivatsa2018@vitstudent.ac.in
+                    <br>ritik.khatri2018@vitstudent.ac.in
+                    <br>pranav.khurana2018@vitstudent.ac.in
+                </p>
+            </div>
+            <div class="col-12 col-md-3 mbr-fonts-style display-7">
+                <h5 class="pb-3">Started</h5>
+                <p class="mbr-text">August, 2020</p>
+            </div>
+        </div>
+        <div class="footer-lower">
+            <div class="media-container-row">
+                <div class="col-sm-12">
+                    <hr>
+                </div>
+            </div>
+            <div class="media-container-row mbr-white">
+                <div class="col-sm-6 copyright">
+                    <p class="mbr-text mbr-fonts-style display-7">
+                        © Copyright 2020 Vrishab V Srivatsa- All Rights Reserved
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+  <script src="{% static 'web/assets/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'popper/popper.min.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'smoothscroll/smooth-scroll.js' %}"></script>
+  <script src="{% static 'tether/tether.min.js' %}"></script>
+  <script src="{% static 'touchswipe/jquery.touch-swipe.min.js' %}"></script>
+  <script src="{% static 'parallax/jarallax.min.js' %}"></script>
+  <script src="{% static 'viewportchecker/jquery.viewportchecker.js' %}"></script>
+  <script src="{% static 'dropdown/js/nav-dropdown.js' %}"></script>
+  <script src="{% static 'dropdown/js/navbar-dropdown.js' %}"></script>
+  <script src="{% static 'theme/js/script.js' %}"></script>
+  
+  {% endif %}
+</body>
+</html>

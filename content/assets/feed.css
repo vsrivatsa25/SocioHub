@@ -1,0 +1,210 @@
+:root {
+  --background-color: #fafafa;
+  --fd-blue: #3897f0;
+  --link-color: #003569;
+}
+body {
+  background-color: white;
+  background-color: var(--background-color);
+  font-size: 14px;
+  font-family: "Open Sans", sans-serif;
+}
+#feed {
+  animation: fadeInMain 0.5s linear;
+}
+
+main {
+  animation: fadeInMain 0.5s linear;
+}
+
+@keyframes fadeInMain {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+
+#feed {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+#feed .photo {
+  background-color: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 65px;
+}
+
+.photo .photo__header {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.photo__header .photo__avatar {
+  width: 12%;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.photo .photo__user-info .photo__author {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.photo > img {
+  width: 100%;
+}
+
+.photo .photo__info {
+  padding: 15px 20px;
+}
+
+.photo__actions {
+  margin-bottom: 15px;
+  font-size: 115%;
+}
+
+.photo__actions .photo__action {
+  margin-right: 15px;
+}
+
+.photo__actions .photo__action {
+  cursor: pointer;
+}
+
+.photo .photo__likes {
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.photo .photo__add-comment-container {
+  margin-top: 15px;
+  border-top: 1px solid #e6e6e6;
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.photo__add-comment-container textarea {
+  width: 90%;
+  border: 0;
+  font-size: 14px;
+  resize: none;
+  height: 20px;
+}
+
+.photo__add-comment-container textarea:focus,
+.photo__add-comment-container textarea:active {
+  outline: none;
+}
+
+.photo__add-comment-container i {
+  cursor: pointer;
+}
+
+.photo .photo__time-ago {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #999;
+  margin-top: 10px;
+  display: block;
+}
+
+.photo__comment {
+  margin-bottom: 10px;
+}
+
+.photo__comments .photo__comment-author {
+  font-weight: 600;
+}
+
+.navigation {
+  height: 75px;
+  background-color: white;
+  border-bottom: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 100px;
+  margin-bottom: 60px;
+}
+
+.navigation .navigation__column:first-child img {
+  height: 45px;
+}
+
+.navigation .navigations__links {
+  display: flex;
+  padding: 0;
+  list-style-type: none;
+}
+
+.navigation .navigation__list-item {
+  margin-left: 30px;
+  padding: 0 2px;
+  opacity: 0;
+  animation: slideNavLink 0.5s ease-out forwards;
+}
+
+@keyframes slideNavLink {
+  from {
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.navigation .navigation__list-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.navigation .navigation__list-item:last-child {
+  animation-delay: 0.3s;
+}
+
+.navigation__link {
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 18px;
+}
+
+.navigation__column input {
+  padding: 5px 0;
+  padding-left: 60px;
+  border: 0;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;
+  background: #fafafa;
+  font-size: 16px;
+}
+
+.navigation__column input:focus {
+  outline: none;
+  border: 1px solid #a9a9a9;
+}
+
+.navigation__column {
+  position: relative;
+}
+
+.navigation__column .fa-search {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+}

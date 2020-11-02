@@ -1,0 +1,50 @@
+{% extends 'layouts/default/page.html' %}
+
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block content %}
+
+    <h4>{% trans 'Log in' %}</h4>
+<br>{% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+  Username or Password is incorrect
+</div>
+{% endif %}
+        <div id="root"><div class="Toastify"></div>
+            <div class="layout">
+                <div class="login-page">
+                    <div class="login-form-container" style="text-align:center">
+                        <h3>Login</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="text" name="email_or_username" required="" placeholder="Username/Email" id="id_email_or_username">
+                            <input type="password" name="password" placeholder="********" id="id_password" required="">
+                        <button type="submit" class="btn btn-primary">{% trans 'Log in' %}</button>
+                        </form>
+                        <p>No account? <a href="{% url 'accounts:sign_up' %}">Sign up</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    <hr>
+
+    <ul>
+        <li>
+            <a href="{% url 'accounts:restore_password' %}">{% trans 'Forgot your password?' %}</a>
+        </li>
+        <li>
+            <a href="{% url 'accounts:remind_username' %}">{% trans 'Forgot your username?' %}</a>
+        </li>
+        <li>
+            <a href="{% url 'accounts:resend_activation_code' %}">{% trans 'Resend an activation code' %}</a>
+        </li>
+    </ul>
+
+{% endblock %}

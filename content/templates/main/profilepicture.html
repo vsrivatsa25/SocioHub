@@ -1,0 +1,106 @@
+{% load bootstrap4 %}
+{% load i18n %}
+{% load static %}
+<html  >
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="{% static 'images/sociohublogo.png' %}" type="image/x-icon">
+  <meta name="description" content="">
+
+  <title>Home</title>
+  <link rel="stylesheet" href="{% static 'web/assets/mobirise-icons/mobirise-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-grid.min.css' %}">
+  <link rel="stylesheet" href="{% static 'socicon/css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'tether/tether.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dropdown/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'theme/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-reboot.min.css' %}">
+  <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="{% static 'feed.css' %}" />
+    <link rel="stylesheet" href="{% static 'theme/css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+    <script src="{% static 'comment.js' %}"></script>
+    <script src="{% static 'like.js' %}"></script>
+
+
+</head>
+<body>
+{% if request.user.is_authenticated %}
+  <nav class="navigation">
+      <div class="navigation__column">
+        <a href="{% url 'index' %}">
+          <!-- Master branch comment -->
+          <img src="{% static 'images/sociohublogo.png' %}" />
+        </a>
+      </div>
+      <div class="navigation__column">
+        <i class="fa fa-search"></i>
+        <input type="text" placeholder="Search" />
+      </div>
+      <div class="navigation__column">
+        <ul class="navigations__links" style="margin-bottom:auto;">
+          <li class="navigation__list-item">
+            <a href="explore.html" class="navigation__link">
+              <i class="fa fa-chart-line"></i>
+            </a>
+          </li>
+          <li class="navigation__list-item">
+            <a href="{% url 'newpost' %}" class="navigation__link">
+              <i class="fa fa-plus-square-o fa-lg" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="navigation__list-item">
+            <a href="#" class="navigation__link">
+              <i class="fa fa-heart-o fa-lg"></i>
+            </a>
+          </li>
+          <li class="navigation__list-item">
+            <a href="{% url 'accounts:change_profile' %}" class="navigation__link">
+              <i class="fa fa-user-o fa-lg"></i>
+            </a>
+          </li>
+          <li class="navigation__list-item">
+            <a href="{% url 'profilepic' %}" class="navigation__link">
+              {% for pic in context.existing %}
+              {% if pic.user_id == request.user.id %}
+              <img
+                src="{{pic.img.url}}"
+                style="float: right; width: 2.5rem; border-radius: 50%"
+              />
+              {% endif %}
+              {% endfor %}
+            </a>
+          </li>
+            <li class="navigation__list-item">
+            <a href="{% url 'accounts:log_out' %}" class="navigation__link">
+              Sign Out
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div id="feed" style="display: flex; width: 17%; margin-left: 3%">
+    <h4>{% trans 'Change Profile Picture' %}</h4>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group"><label for="id_img">Profile Picture</label>
+          <input type="file" name="img" accept="image/*" onchange="readURL(this);" class="form-control-file" title="" required="" id="id_img">
+        </div>
+
+        <button class="btn btn-success">{% trans 'Change' %}</button>
+
+    </form>
+    </div>
+    {% endif %}
+
+</body>
+</html>
