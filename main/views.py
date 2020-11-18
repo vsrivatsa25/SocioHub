@@ -5,12 +5,13 @@ from django.contrib import messages
 from .models import Post, UserInterests, ProfilePic, Like, Comment, Friend
 from .forms import PostForm, ProfilePictureForm, InterestForm, LikeSubmit, CommentSubmit
 from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from .filtering import content_check
 import datetime
 
-class Liked(TemplateView):
+class Liked(LoginRequiredMixin,TemplateView):
     model = Post
     template_name = 'main/liked.html'
 
@@ -24,7 +25,7 @@ class Liked(TemplateView):
 
         return context
 
-class Follow(TemplateView):
+class Follow(LoginRequiredMixin,TemplateView):
     template_name = 'main/follow.html'
 
     def get_context_data(self, **kwargs):
@@ -40,7 +41,7 @@ class Follow(TemplateView):
         if self.request.method=='POST':
             redirect('index')
 
-class FriendList(TemplateView):
+class FriendList(LoginRequiredMixin,TemplateView):
     model = Friend
     template_name = 'main/friends.html'
 
@@ -116,7 +117,7 @@ class IndexPageView(View):
                     newform.save()
                 return redirect('index')
 
-def post_image(request):
+def post_image(LoginRequiredMixin,request):
     if request.method == 'GET':
         context = {}
         context['interests'] = UserInterests.objects.filter(user_id=request.user.id)
@@ -144,7 +145,7 @@ def post_image(request):
     messages.warning(request,'Please Complete all fields')
     return render(request, 'main/addPost.html', {'form': form})
 
-def post_interest(request):
+def post_interest(LoginRequiredMixin,request):
     if request.method == 'GET':
         context = {}
         context['interests'] = UserInterests.objects.filter(user_id=request.user.id).order_by('interest')
@@ -168,7 +169,7 @@ def post_interest(request):
         form = InterestForm()
     return render(request, 'main/addInterest.html', {'form': form})
 
-def profile_picture(request):
+def profile_picture(LoginRequiredMixin,request):
     if request.method == 'GET':
         context2 = {}
         context2['existing'] = ProfilePic.objects.all()
