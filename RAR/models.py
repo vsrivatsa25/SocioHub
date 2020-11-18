@@ -36,4 +36,3 @@ class Friend(models.Model):
 
 
 
-

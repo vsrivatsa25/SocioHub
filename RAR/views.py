@@ -161,9 +161,6 @@ def post_interest(request):
             newform.save()
             messages.success(request,'Interest Added')
             return redirect('interests')
-        else:
-            messages.warning(request,'Invalid Input')
-            return redirect('interests')
     else:
         form = InterestForm()
     return render(request, 'main/addInterest.html', {'form': form})

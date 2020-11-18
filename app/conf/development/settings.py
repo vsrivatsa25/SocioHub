@@ -2,6 +2,7 @@ import os
 import warnings
 from django.utils.translation import ugettext_lazy as _
 from os.path import dirname
+import django_heroku
 
 warnings.simplefilter('error', DeprecationWarning)
 
@@ -137,3 +138,5 @@ STATICFILES_DIRS = [
 LOCALE_PATHS = [
     os.path.join(CONTENT_DIR, 'locale')
 ]
+
+django_heroku.settings(locals())
