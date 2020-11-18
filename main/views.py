@@ -117,7 +117,7 @@ class IndexPageView(View):
                     newform.save()
                 return redirect('index')
 
-def post_image(LoginRequiredMixin,request):
+def post_image(request):
     if request.method == 'GET':
         context = {}
         context['interests'] = UserInterests.objects.filter(user_id=request.user.id)
@@ -145,7 +145,7 @@ def post_image(LoginRequiredMixin,request):
     messages.warning(request,'Please Complete all fields')
     return render(request, 'main/addPost.html', {'form': form})
 
-def post_interest(LoginRequiredMixin,request):
+def post_interest(request):
     if request.method == 'GET':
         context = {}
         context['interests'] = UserInterests.objects.filter(user_id=request.user.id).order_by('interest')
@@ -169,7 +169,7 @@ def post_interest(LoginRequiredMixin,request):
         form = InterestForm()
     return render(request, 'main/addInterest.html', {'form': form})
 
-def profile_picture(LoginRequiredMixin,request):
+def profile_picture(request):
     if request.method == 'GET':
         context2 = {}
         context2['existing'] = ProfilePic.objects.all()
